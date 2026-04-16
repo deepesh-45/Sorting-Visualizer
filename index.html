@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SortScape - Algorithm Visualizer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <nav class="top-nav">
+        <a href="main.html" class="nav-logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>SortScape</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="main.html" class="active">Visualizer</a></li>
+            <li><a href="learn.html">Algorithm Book</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme"></button>
+    </nav>
+
+    <div class="controls-header">
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="size-slider">Array Size</label>
+                <input type="range" id="size-slider" min="5" max="100" step="1" value="50">
+            </div>
+            
+            <div class="control-group">
+                <label for="speed-slider">Sorting Speed</label>
+                <input type="range" id="speed-slider" min="1" max="100" step="1" value="80">
+            </div>
+
+            <div class="control-group">
+                <label for="custom-input">Custom Array (comma-separated)</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="custom-input" placeholder="e.g. 10, 50, 20" class="input-text">
+                    <button id="load-custom-btn" class="btn">Load</button>
+                </div>
+            </div>
+            
+            <button id="generate-btn" class="btn btn-primary">Generate Array</button>
+            <button id="stop-btn" class="btn btn-danger" disabled>Stop</button>
+            <button id="manual-btn" class="btn btn-success">Manual Mode: OFF</button>
+        </div>
+    </div>
+
+    <div class="algorithms" id="algo-container">
+        <!-- 8 Sorting Algorithms -->
+        <button id="bubble-btn" class="btn">Bubble</button>
+        <button id="selection-btn" class="btn">Selection</button>
+        <button id="insertion-btn" class="btn">Insertion</button>
+        <button id="merge-btn" class="btn">Merge</button>
+        <button id="quick-btn" class="btn">Quick</button>
+        <button id="heap-btn" class="btn">Heap</button>
+        <button id="shell-btn" class="btn">Shell</button>
+        <button id="cocktail-btn" class="btn">Cocktail</button>
+    </div>
+
+    <main>
+        <div class="info-panel">
+            <div class="info-stat">
+                <span class="info-label">Comparisons</span>
+                <span class="info-value" id="comp-count">0</span>
+            </div>
+            <div class="info-stat">
+                <span class="info-label">Swaps</span>
+                <span class="info-value" id="swap-count">0</span>
+            </div>
+            <div class="info-stat">
+                <span class="info-label">Dataset Size</span>
+                <span class="info-value" id="size-count">50</span>
+            </div>
+            <div class="array-viewer" id="array-text">
+                [ ]
+            </div>
+        </div>
+
+        <div id="array-container" class="array-container">
+            <!-- Array bars are injected here via JS -->
+        </div>
+
+        <section class="how-to-use">
+            <h2>Welcome to SortScape</h2>
+            <p>SortScape is an interactive playground for visualizing how different sorting algorithms operate on an array of numbers under the hood.</p>
+            <ul>
+                <li><strong>Generate Array:</strong> Creates a randomized dataset. Adjust the Array Size slider to change the number of elements.</li>
+                <li><strong>Sorting Speed:</strong> Controls the animation delay. Slide to the right for faster visualizations!</li>
+                <li><strong>Stop:</strong> Gracefully halts the execution of an ongoing sorting algorithm, freezing the array in its current state.</li>
+                <li><strong>Manual Mode:</strong> Become the algorithm yourself! Toggle manual mode and drag & drop the array bars into their sorted order. If you accomplish the feat, you win!</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="main.html" class="nav-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span>SortScape</span>
+                </a>
+                <p>Master computer science fundamentals through an immersive, real-time visual playground.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="main.html">Visualizer</a></li>
+                    <li><a href="learn.html">Algorithm Book</a></li>
+                    <li><a href="about.html">About SortScape</a></li>
+                </ul>
+            </div>
+            <div class="footer-socials">
+                <h4>Innovation</h4>
+                <p>Designed to empower visual learners and logical thinkers everywhere. Dive right in and sort away.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SortScape. Open to the world.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="common.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

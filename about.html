@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SortScape - About</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <nav class="top-nav">
+        <a href="main.html" class="nav-logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>SortScape</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="main.html">Visualizer</a></li>
+            <li><a href="learn.html">Algorithm Book</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+        </ul>
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme"></button>
+    </nav>
+
+    <main class="page-container">
+        <header class="book-header">
+            <h1>About SortScape</h1>
+            <p>Empowering algorithms through visibility.</p>
+        </header>
+
+        <section class="algo-section">
+            <h2>The Project</h2>
+            <p>SortScape was born from a desire to make learning computer science fundamentals a beautiful, engaging, and highly interactive experience. Typical algorithmic studying often consists of dry textbooks and abstract concepts. With SortScape, the goal is to map these abstract logical processes directly into your visual cortex.</p>
+            
+            <p>SortScape runs purely in the browser utilizing modern Javascript DOM-manipulation alongside asynchronous execution delays to properly demonstrate exactly when data compares, swaps, or locks in place.</p>
+            
+            <h2>Features</h2>
+            <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-secondary);">
+                <li>8 implemented algorithms: from Bubble sort to Cocktail sort.</li>
+                <li>Dynamic array size scaling.</li>
+                <li>Variable visualization run speed.</li>
+                <li>Customized algorithmic data reporting: comparisons and swaps track exactly what the script is doing.</li>
+                <li>An interactive Manual Sorting Game to test your intuition.</li>
+                <li>Fully responsive, mobile-friendly design with Dark/Light mode capabilities.</li>
+            </ul>
+        </section>
+        
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="main.html" class="nav-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span>SortScape</span>
+                </a>
+                <p>Master computer science fundamentals through an immersive, real-time visual playground.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="main.html">Visualizer</a></li>
+                    <li><a href="learn.html">Algorithm Book</a></li>
+                    <li><a href="about.html">About SortScape</a></li>
+                </ul>
+            </div>
+            <div class="footer-socials">
+                <h4>Innovation</h4>
+                <p>Designed to empower visual learners and logical thinkers everywhere. Dive right in and sort away.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SortScape. Open to the world.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="common.js"></script>
+</body>
+</html>
