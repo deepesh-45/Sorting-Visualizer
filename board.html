@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sortify - About</title>
-    
+    <title>Sortify - Board Mode</title>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+
     <nav class="top-nav">
         <a href="index.html" class="nav-logo">
             <svg class="logo-dark" viewBox="0 0 40 40" width="32" height="32">
@@ -45,66 +48,86 @@
         </a>
         <ul class="nav-links">
             <li><a href="index.html">Visualizer</a></li>
-            <li><a href="board.html">Board Mode</a></li>
+            <li><a href="board.html" class="active">Board Mode</a></li>
             <li><a href="compare.html">Compare</a></li>
             <li><a href="learn.html">Algorithm Book</a></li>
-            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="about.html">About</a></li>
         </ul>
         <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme"></button>
     </nav>
 
-    <main class="page-container">
-        <header class="book-header" style="text-align: center; margin-bottom: 4rem;">
-            <h1 style="font-size: 3.5rem; background: linear-gradient(to right, var(--bar-default), var(--bar-compare)); -webkit-background-clip: text; color: transparent; margin-bottom: 1rem;">About Sortify</h1>
-            <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Empowering computer science education through radical visibility and interactive aesthetics.</p>
-        </header>
+    <div class="controls-header">
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="algo-select">Algorithm</label>
+                <select id="algo-select" class="input-text" style="width: 150px; cursor: pointer; appearance: auto;">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="quick">Quick Sort</option>
+                </select>
+            </div>
 
-        <section class="algo-section" style="margin-bottom: 4rem;">
-            <h2 style="font-size: 2rem; color: var(--text-primary); margin-bottom: 1.5rem;">The Vision</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary);">Algorithms are often the most intimidating hurdle for aspiring developers. Usually, they are taught via dry pseudocode on whiteboards or static textbook pages. <strong style="color: var(--text-primary);">Sortify changes this narrative.</strong> By abstracting away mathematical rigor into bright, fluid, and real-time visual movement, it maps the underlying logic directly into the visual cortex of the user.</p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-top: 1rem;">We believe that you shouldn't just read an algorithm—you should watch it think, intercept its execution, and race it against itself.</p>
-        </section>
+            <div class="control-group">
+                <label for="size-slider">Array Size</label>
+                <input type="range" id="size-slider" min="5" max="25" step="1" value="10">
+            </div>
 
-        <section class="algo-section" style="margin-bottom: 4rem;">
-            <h2 style="font-size: 2rem; color: var(--text-primary); margin-bottom: 2rem;">The Architecture Under The Hood</h2>
-            <div class="usp-grid">
-                <div class="chart-box" style="background: rgba(0,0,0,0.2);">
-                    <h3 style="color: var(--bar-default); margin-bottom: 1rem; font-size: 1.2rem;">Asynchronous DOM Engine</h3>
-                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">Sortify utilizes modern Javascript strictly localized via <code>async/await</code> promises. This non-blocking loop engine allows the UI to stay fully responsive—enabling you to throttle sliders or hit the emergency Stop button—even while intricate <code style="color: var(--bar-swap)">O(n²)</code> operations execute at massive frame rates.</p>
-                </div>
-                <div class="chart-box" style="background: rgba(0,0,0,0.2);">
-                    <h3 style="color: var(--bar-sorted); margin-bottom: 1rem; font-size: 1.2rem;">Hardware Benchmarking</h3>
-                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">True insight requires honest data. The <strong>Comparison Dashboard</strong> doesn't guess times based on animation frames. Before the race visibly begins, Sortify securely duplicates your dataset array and executes silent machine-speed computations via <code>performance.now()</code> to reveal honest metrics divorced from CSS rendering times.</p>
-                </div>
-                <div class="chart-box" style="background: rgba(0,0,0,0.2);">
-                    <h3 style="color: #a78bfa; margin-bottom: 1rem; font-size: 1.2rem;">Heuristic AI Assistance</h3>
-                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">You aren't operating blindly. Sortify's active analysis engine continuously samples your active datasets. It automatically counts mathematical element inversion rates in the background to dynamically suggest your most computationally optimal algorithm.</p>
-                </div>
-                <div class="chart-box" style="background: rgba(0,0,0,0.2);">
-                    <h3 style="color: var(--bar-compare); margin-bottom: 1rem; font-size: 1.2rem;">Glassmorphic Aesthetics</h3>
-                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">Learning shouldn't look boring. The UI entirely bypasses generic styling frameworks. Built from custom CSS and precise design variable-tokens, it adheres tightly to a sleek, frosted glassmorphism language scaling natively alongside Light & Dark modes.</p>
+            <div class="control-group">
+                <label for="speed-slider">Speed</label>
+                <input type="range" id="speed-slider" min="1" max="100" step="1" value="70">
+            </div>
+
+            <div class="control-group">
+                <label for="custom-input">Custom Array</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <textarea id="custom-input" placeholder="e.g. 10, 50, 20" class="input-text"
+                        style="height: 38px; resize: none; width: 180px; padding-top: 8px; font-family: monospace; overflow: hidden;"></textarea>
+                    <button id="load-custom-btn" class="btn">Load</button>
                 </div>
             </div>
-        </section>
-
-        <section class="algo-section" style="margin-bottom: 4rem;">
-            <h2 style="font-size: 2rem; color: var(--text-primary); margin-bottom: 1.5rem;">Core Features Array</h2>
-            <ul style="margin-left: 1.5rem; line-height: 2.2; color: var(--text-secondary); font-size: 1.1rem;">
-                <li><strong style="color: var(--text-primary);">8 Hand-crafted Algorithms:</strong> Support ranging from basic Bubble and Selection sorting, all the way to intricate implementations of Quick and Heap sorts.</li>
-                <li><strong style="color: var(--text-primary);">Total Mechanical Control:</strong> Unrestricted scaling of Array Size and visualization Speed. Throw anything at it.</li>
-                <li><strong style="color: var(--text-primary);">Algorithm Head-to-Head Racing:</strong> Visually pit distinct logics directly against each other.</li>
-                <li><strong style="color: var(--text-primary);">Gamified Logic Mode:</strong> A robust Manual Mode turning the abstract data structure into an interactive sorting puzzle running against a live timer.</li>
-                <li><strong style="color: var(--text-primary);">Synchronous Telemetry:</strong> Keep your eyes locked on real-time Comparisons and Swaps counting natively strapped to the rendering loop.</li>
-            </ul>
-        </section>
-        
-        <div style="text-align: center; border-top: 1px solid var(--glass-border); padding-top: 3rem; margin-bottom: 2rem;">
-            <p style="color: var(--bar-default); font-size: 1.3rem; font-style: italic; font-weight: 500;">"Where abstract logic meets visual clarity."</p>
         </div>
-        
+        <div class="controls-container" style="margin-top: 1rem;">
+            <button id="start-btn" class="btn btn-primary" style="font-weight: bold; width: 150px;">START SORT</button>
+            <button id="stop-btn" class="btn btn-danger" disabled style="width: 100px;">Stop</button>
+            <button id="generate-btn" class="btn">Generate Random Array</button>
+        </div>
+    </div>
+
+    <main>
+        <div class="board-container" style="width: 100%; max-width: 1000px; margin: 2rem auto; background: var(--glass-bg); padding: 3rem; border-radius: 16px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px var(--glass-shadow); backdrop-filter: blur(10px); min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+            
+            <h2 id="pass-indicator" style="position: absolute; top: 1.5rem; left: 1.5rem; font-size: 1.25rem; color: var(--text-secondary); opacity: 0; transition: opacity 0.3s; margin: 0;">Pass: 1</h2>
+            
+            <div id="number-board" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; width: 100%;">
+                <!-- Numbers injected here -->
+            </div>
+
+        </div>
+
+        <div class="color-legend">
+            <div class="legend-item">
+                <span class="color-box default-color"></span>
+                <span>Unsorted</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box compare-color"></span>
+                <span>Comparing</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box swap-color"></span>
+                <span>Swapping</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box sorted-color"></span>
+                <span>Sorted</span>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" style="margin-top: auto;">
         <div class="footer-content">
             <div class="footer-brand">
                 <a href="index.html" class="nav-logo">
@@ -158,5 +181,7 @@
 
     <!-- Custom JS -->
     <script src="common.js"></script>
+    <script src="board.js"></script>
 </body>
+
 </html>

@@ -1,29 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SortScape - Algorithm Visualizer</title>
-    
+    <title>Sortify - Algorithm Visualizer</title>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    
+
     <nav class="top-nav">
         <a href="index.html" class="nav-logo">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            <svg class="logo-dark" viewBox="0 0 40 40" width="32" height="32">
+                <circle cx="20" cy="20" r="18" fill="#16213E" opacity="0.9" />
+                <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5" />
+                <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5" />
+                <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB" />
+                <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4" />
+                <polyline points="11,24 20,17 29,9" fill="none" stroke="#378ADD" stroke-width="1"
+                    stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round" />
+                <circle cx="11" cy="24" r="2" fill="#5DCAA5" />
+                <circle cx="20" cy="17" r="2" fill="#85B7EB" />
+                <circle cx="29" cy="9" r="2" fill="#B5D4F4" />
+                <polygon points="29,5 26,11 32,11" fill="#85B7EB" />
             </svg>
-            <span>SortScape</span>
+            <svg class="logo-light" viewBox="0 0 40 40" width="32" height="32">
+                <circle cx="20" cy="20" r="18" fill="white" />
+                <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5" />
+                <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5" />
+                <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB" />
+                <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4" />
+                <polyline points="11,24 20,17 29,9" fill="none" stroke="#185FA5" stroke-width="1"
+                    stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round" />
+                <circle cx="11" cy="24" r="2" fill="#0F6E56" />
+                <circle cx="20" cy="17" r="2" fill="#185FA5" />
+                <circle cx="29" cy="9" r="2" fill="#378ADD" />
+                <polygon points="29,5 26,11 32,11" fill="#185FA5" />
+            </svg>
+            <span>Sortify</span>
         </a>
         <ul class="nav-links">
             <li><a href="index.html" class="active">Visualizer</a></li>
+            <li><a href="board.html">Board Mode</a></li>
+            <li><a href="compare.html">Compare</a></li>
             <li><a href="learn.html">Algorithm Book</a></li>
             <li><a href="about.html">About</a></li>
         </ul>
@@ -33,42 +63,75 @@
     <div class="controls-header">
         <div class="controls-container">
             <div class="control-group">
+                <label for="algo-select">Algorithm</label>
+                <select id="algo-select" class="input-text" style="width: 150px; cursor: pointer; appearance: auto;">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="quick">Quick Sort</option>
+                    <option value="heap">Heap Sort</option>
+                    <option value="shell">Shell Sort</option>
+                    <option value="cocktail">Cocktail Sort</option>
+                </select>
+            </div>
+
+            <div class="control-group">
                 <label for="size-slider">Array Size</label>
                 <input type="range" id="size-slider" min="5" max="100" step="1" value="50">
             </div>
-            
+
             <div class="control-group">
-                <label for="speed-slider">Sorting Speed</label>
+                <label for="speed-slider">Speed</label>
                 <input type="range" id="speed-slider" min="1" max="100" step="1" value="80">
             </div>
 
             <div class="control-group">
-                <label for="custom-input">Custom Array (comma-separated)</label>
+                <label for="custom-input">Custom Array</label>
                 <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="custom-input" placeholder="e.g. 10, 50, 20" class="input-text">
+                    <textarea id="custom-input" placeholder="e.g. 10, 50, 20" class="input-text"
+                        style="height: 38px; resize: none; width: 180px; padding-top: 8px; font-family: monospace; overflow: hidden;"></textarea>
                     <button id="load-custom-btn" class="btn">Load</button>
                 </div>
             </div>
-            
-            <button id="generate-btn" class="btn btn-primary">Generate Array</button>
-            <button id="stop-btn" class="btn btn-danger" disabled>Stop</button>
+        </div>
+        <div class="controls-container" style="margin-top: 1rem;">
+            <button id="play-pause-btn" class="btn btn-primary" style="font-weight: bold; min-width: 160px;">▶ Start
+                Sort</button>
+            <button id="stop-btn" class="btn btn-danger" disabled style="width: 100px;">Stop</button>
+            <button id="generate-btn" class="btn">Generate Random Array</button>
             <button id="manual-btn" class="btn btn-success">Manual Mode: OFF</button>
+        </div>
+
+        <div
+            style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; border-top: 1px solid var(--glass-border); padding-top: 1.25rem;">
+            <span style="color: #a78bfa; font-weight: bold; font-size: 0.9rem; letter-spacing: 0.5px;">✨ AI
+                SUGGESTION:</span>
+            <span id="algo-suggestion" style="color: var(--text-primary); font-size: 0.95rem;">Analyzing...</span>
+            <button id="apply-sugg-btn" class="btn"
+                style="padding: 0.3rem 1rem; font-size: 0.8rem; font-weight: 600; background: rgba(167, 139, 250, 0.1); border-color: #a78bfa; color: #a78bfa; margin-left: 0.5rem; border-radius: 20px;">Use
+                This</button>
         </div>
     </div>
 
-    <div class="algorithms" id="algo-container">
-        <!-- 8 Sorting Algorithms -->
-        <button id="bubble-btn" class="btn">Bubble</button>
-        <button id="selection-btn" class="btn">Selection</button>
-        <button id="insertion-btn" class="btn">Insertion</button>
-        <button id="merge-btn" class="btn">Merge</button>
-        <button id="quick-btn" class="btn">Quick</button>
-        <button id="heap-btn" class="btn">Heap</button>
-        <button id="shell-btn" class="btn">Shell</button>
-        <button id="cocktail-btn" class="btn">Cocktail</button>
-    </div>
-
     <main>
+        <div id="array-container" class="array-container" style="margin-bottom: 2rem;">
+            <!-- Array bars are injected here via JS -->
+        </div>
+
+        <div class="playback-controls" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+            <button id="prev-btn" class="btn" style="min-width: 100px;" disabled>⏮ Back</button>
+            <button id="next-btn" class="btn" style="min-width: 100px;" disabled>Forward ⏭</button>
+        </div>
+
+        <div class="complexity-container"
+            style="margin-bottom: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 800px;">
+            <h3 style="margin-top: 0; text-align: center;">Time Complexity Graph</h3>
+            <div style="width: 100%; margin: 0 auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 15px;">
+                <canvas id="complexity-chart" style="width: 100%; height: 350px;"></canvas>
+            </div>
+        </div>
+
         <div class="info-panel">
             <div class="info-stat">
                 <span class="info-label">Comparisons</span>
@@ -82,24 +145,71 @@
                 <span class="info-label">Dataset Size</span>
                 <span class="info-value" id="size-count">50</span>
             </div>
+            <div class="info-stat" id="timer-stat"
+                style="display: none; border-left: 2px solid var(--glass-border); padding-left: 1.5rem; margin-left: 0.5rem;">
+                <span class="info-label" style="color: var(--bar-sorted);">Time Elapsed</span>
+                <span class="info-value" id="timer-count" style="color: var(--bar-sorted);">0.0s</span>
+            </div>
             <div class="array-viewer" id="array-text">
                 [ ]
             </div>
         </div>
 
-        <div id="array-container" class="array-container">
-            <!-- Array bars are injected here via JS -->
+        <div class="color-legend">
+            <div class="legend-item">
+                <span class="color-box default-color"></span>
+                <span>Unsorted</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box compare-color"></span>
+                <span>Comparing</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box swap-color"></span>
+                <span>Swapping</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box sorted-color"></span>
+                <span>Sorted</span>
+            </div>
         </div>
 
         <section class="how-to-use">
-            <h2>Welcome to SortScape</h2>
-            <p>SortScape is an interactive playground for visualizing how different sorting algorithms operate on an array of numbers under the hood.</p>
-            <ul>
-                <li><strong>Generate Array:</strong> Creates a randomized dataset. Adjust the Array Size slider to change the number of elements.</li>
-                <li><strong>Sorting Speed:</strong> Controls the animation delay. Slide to the right for faster visualizations!</li>
-                <li><strong>Stop:</strong> Gracefully halts the execution of an ongoing sorting algorithm, freezing the array in its current state.</li>
-                <li><strong>Manual Mode:</strong> Become the algorithm yourself! Toggle manual mode and drag & drop the array bars into their sorted order. If you accomplish the feat, you win!</li>
-            </ul>
+            <div class="usp-grid">
+                <div class="usp-column">
+                    <h3 class="func-title">Interactive Capabilities</h3>
+                    <p>Welcome to a dynamic environment crafted to demystify data organization. Whether you're a student
+                        or a curious mind, you have full mechanical control.</p>
+                    <ul>
+                        <li><strong>Precision Controls:</strong> Select from 8 fundamental strategies in the algorithm
+                            dropdown. Tweak the <strong>Array Size</strong> or dictate the <strong>Speed</strong> in
+                            real-time to watch the mechanics unfold at your own pace.</li>
+                        <li><strong>Bring Your Own Data:</strong> Use the <strong>Custom Array</strong> field to map out
+                            specific sequences, edge cases, or homework problems—just hit Load and START SORT to see how
+                            the system conquers them.</li>
+                        <li><strong>Gamified Logic (Manual Mode):</strong> Turn the tables and become the algorithm. By
+                            toggling <strong>Manual Mode</strong>, you drag and drop the dataset yourself, racing
+                            against a live clock to achieve perfect order.</li>
+                    </ul>
+                </div>
+                <div class="usp-column nonfunc-col">
+                    <h3 class="nonfunc-title">Engineered for Insight</h3>
+                    <p>Beyond animating arrays, the platform's architecture guarantees an uncompromised, aesthetic
+                        learning experience through transparent data flows.</p>
+                    <ul>
+                        <li><strong>High-Fidelity Rendering:</strong> Built for flawless, smooth performance, the
+                            visualizer handles large array permutations elegantly without browser lag or stuttering.
+                        </li>
+                        <li><strong>Live Telemetry:</strong> Keep your eyes on the <strong>Comparisons</strong> and
+                            <strong>Swaps</strong> counters. They provide instantaneous, accurate feedback on the
+                            computational cost and logic of the active operation.
+                        </li>
+                        <li><strong>Interrupt & Analyze:</strong> The dedicated <strong>Stop</strong> function isn't
+                            just an off-switch; it safely halts intricate memory manipulations at any given moment,
+                            letting you dissect its transient state.</li>
+                    </ul>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -107,10 +217,33 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <a href="index.html" class="nav-logo">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    <svg class="logo-dark" viewBox="0 0 40 40" width="32" height="32">
+                        <circle cx="20" cy="20" r="18" fill="#16213E" opacity="0.9" />
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5" />
+                        <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5" />
+                        <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB" />
+                        <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4" />
+                        <polyline points="11,24 20,17 29,9" fill="none" stroke="#378ADD" stroke-width="1"
+                            stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round" />
+                        <circle cx="11" cy="24" r="2" fill="#5DCAA5" />
+                        <circle cx="20" cy="17" r="2" fill="#85B7EB" />
+                        <circle cx="29" cy="9" r="2" fill="#B5D4F4" />
+                        <polygon points="29,5 26,11 32,11" fill="#85B7EB" />
                     </svg>
-                    <span>SortScape</span>
+                    <svg class="logo-light" viewBox="0 0 40 40" width="32" height="32">
+                        <circle cx="20" cy="20" r="18" fill="white" />
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5" />
+                        <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5" />
+                        <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB" />
+                        <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4" />
+                        <polyline points="11,24 20,17 29,9" fill="none" stroke="#185FA5" stroke-width="1"
+                            stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round" />
+                        <circle cx="11" cy="24" r="2" fill="#0F6E56" />
+                        <circle cx="20" cy="17" r="2" fill="#185FA5" />
+                        <circle cx="29" cy="9" r="2" fill="#378ADD" />
+                        <polygon points="29,5 26,11 32,11" fill="#185FA5" />
+                    </svg>
+                    <span>Sortify</span>
                 </a>
                 <p>Master computer science fundamentals through an immersive, real-time visual playground.</p>
             </div>
@@ -118,8 +251,10 @@
                 <h4>Explore</h4>
                 <ul>
                     <li><a href="index.html">Visualizer</a></li>
+                    <li><a href="board.html">Board Mode</a></li>
+                    <li><a href="compare.html">Compare</a></li>
                     <li><a href="learn.html">Algorithm Book</a></li>
-                    <li><a href="about.html">About SortScape</a></li>
+                    <li><a href="about.html">About Sortify</a></li>
                 </ul>
             </div>
             <div class="footer-socials">
@@ -128,7 +263,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 SortScape. Open to the world.</p>
+            <p>&copy; 2026 Sortify. Open to the world.</p>
         </div>
     </footer>
 
@@ -136,4 +271,5 @@
     <script src="common.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

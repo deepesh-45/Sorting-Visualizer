@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sortify - Compare Algorithms</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-logo">
+            <svg class="logo-dark" viewBox="0 0 40 40" width="32" height="32">
+                <circle cx="20" cy="20" r="18" fill="#16213E" opacity="0.9"/>
+                <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5"/>
+                <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5"/>
+                <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB"/>
+                <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4"/>
+                <polyline points="11,24 20,17 29,9" fill="none" stroke="#378ADD" stroke-width="1" stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round"/>
+                <circle cx="11" cy="24" r="2" fill="#5DCAA5"/>
+                <circle cx="20" cy="17" r="2" fill="#85B7EB"/>
+                <circle cx="29" cy="9" r="2" fill="#B5D4F4"/>
+                <polygon points="29,5 26,11 32,11" fill="#85B7EB"/>
+            </svg>
+            <svg class="logo-light" viewBox="0 0 40 40" width="32" height="32">
+                <circle cx="20" cy="20" r="18" fill="white"/>
+                <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5"/>
+                <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5"/>
+                <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB"/>
+                <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4"/>
+                <polyline points="11,24 20,17 29,9" fill="none" stroke="#185FA5" stroke-width="1" stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round"/>
+                <circle cx="11" cy="24" r="2" fill="#0F6E56"/>
+                <circle cx="20" cy="17" r="2" fill="#185FA5"/>
+                <circle cx="29" cy="9" r="2" fill="#378ADD"/>
+                <polygon points="29,5 26,11 32,11" fill="#185FA5"/>
+            </svg>
+            <span>Sortify</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Visualizer</a></li>
+            <li><a href="board.html">Board Mode</a></li>
+            <li><a href="compare.html" class="active">Compare</a></li>
+            <li><a href="learn.html">Algorithm Book</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme"></button>
+    </nav>
+
+    <div class="controls-header">
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="algo-select-1">Algorithm 1 (Blue)</label>
+                <select id="algo-select-1" class="input-text" style="width: 140px; cursor: pointer; appearance: auto;">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="merge" selected>Merge Sort</option>
+                    <option value="quick">Quick Sort</option>
+                    <option value="heap">Heap Sort</option>
+                    <option value="shell">Shell Sort</option>
+                    <option value="cocktail">Cocktail Sort</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="algo-select-2">Algorithm 2 (Green)</label>
+                <select id="algo-select-2" class="input-text" style="width: 140px; cursor: pointer; appearance: auto;">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="quick" selected>Quick Sort</option>
+                    <option value="heap">Heap Sort</option>
+                    <option value="shell">Shell Sort</option>
+                    <option value="cocktail">Cocktail Sort</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="size-slider">Array Size</label>
+                <input type="range" id="size-slider" min="5" max="100" step="1" value="50">
+            </div>
+
+            <div class="control-group">
+                <label for="speed-slider">Speed</label>
+                <input type="range" id="speed-slider" min="1" max="100" step="1" value="80">
+            </div>
+        </div>
+        <div class="controls-container" style="margin-top: 1rem;">
+            <button id="start-btn" class="btn btn-primary" style="font-weight: bold; width: 150px;">START RACE</button>
+            <button id="generate-btn" class="btn">Generate Random Array</button>
+        </div>
+    </div>
+
+    <main style="padding: 1rem 2rem 3rem 2rem;">
+        <div class="compare-grid">
+            <div class="compare-panel">
+                <h2 id="title-1">Merge Sort</h2>
+                <div class="info-stat-row">
+                    <span>Comps: <strong id="comp-1">0</strong></span>
+                    <span>Swaps: <strong id="swap-1">0</strong></span>
+                </div>
+                <div id="container-1" class="array-container mini"></div>
+            </div>
+            <div class="compare-panel">
+                <h2 id="title-2">Quick Sort</h2>
+                <div class="info-stat-row">
+                    <span>Comps: <strong id="comp-2">0</strong></span>
+                    <span>Swaps: <strong id="swap-2">0</strong></span>
+                </div>
+                <div id="container-2" class="array-container mini" style="border-bottom-color: var(--bar-sorted);"></div>
+            </div>
+        </div>
+
+        <div class="analytics-dashboard">
+            <div class="dashboard-header">
+                <h2>Analytics Dashboard</h2>
+                <p>Post-race statistical breakdown. Benchmarking executes algorithms behind the scenes (without visual delay) to compute true relative execution time isolated from the browser rendering pipeline.</p>
+            </div>
+            <div class="charts-wrap">
+                <div class="chart-box">
+                    <h3>Execution Time (ms)</h3>
+                    <div class="bar-row"><div class="stat-label" id="lbl-time-1">--</div><div class="bar bar-1" id="bar-time-1"></div></div>
+                    <div class="bar-row"><div class="stat-label" id="lbl-time-2">--</div><div class="bar bar-2" id="bar-time-2"></div></div>
+                </div>
+                <div class="chart-box">
+                    <h3>Total Comparisons</h3>
+                    <div class="bar-row"><div class="stat-label" id="lbl-comp-1">--</div><div class="bar bar-1" id="bar-comp-1"></div></div>
+                    <div class="bar-row"><div class="stat-label" id="lbl-comp-2">--</div><div class="bar bar-2" id="bar-comp-2"></div></div>
+                </div>
+                <div class="chart-box">
+                    <h3>Total Swaps / Operations</h3>
+                    <div class="bar-row"><div class="stat-label" id="lbl-swap-1">--</div><div class="bar bar-1" id="bar-swap-1"></div></div>
+                    <div class="bar-row"><div class="stat-label" id="lbl-swap-2">--</div><div class="bar bar-2" id="bar-swap-2"></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo">
+                    <svg class="logo-dark" viewBox="0 0 40 40" width="32" height="32">
+                        <circle cx="20" cy="20" r="18" fill="#16213E" opacity="0.9"/>
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5"/>
+                        <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5"/>
+                        <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB"/>
+                        <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4"/>
+                        <polyline points="11,24 20,17 29,9" fill="none" stroke="#378ADD" stroke-width="1" stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round"/>
+                        <circle cx="11" cy="24" r="2" fill="#5DCAA5"/>
+                        <circle cx="20" cy="17" r="2" fill="#85B7EB"/>
+                        <circle cx="29" cy="9" r="2" fill="#B5D4F4"/>
+                        <polygon points="29,5 26,11 32,11" fill="#85B7EB"/>
+                    </svg>
+                    <svg class="logo-light" viewBox="0 0 40 40" width="32" height="32">
+                        <circle cx="20" cy="20" r="18" fill="white"/>
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="#378ADD" stroke-width="0.8" opacity="0.5"/>
+                        <rect x="8" y="26" width="6" height="7" rx="1.5" fill="#5DCAA5"/>
+                        <rect x="17" y="19" width="6" height="14" rx="1.5" fill="#85B7EB"/>
+                        <rect x="26" y="11" width="6" height="22" rx="1.5" fill="#B5D4F4"/>
+                        <polyline points="11,24 20,17 29,9" fill="none" stroke="#185FA5" stroke-width="1" stroke-dasharray="2.5 2" opacity="0.7" stroke-linecap="round"/>
+                        <circle cx="11" cy="24" r="2" fill="#0F6E56"/>
+                        <circle cx="20" cy="17" r="2" fill="#185FA5"/>
+                        <circle cx="29" cy="9" r="2" fill="#378ADD"/>
+                        <polygon points="29,5 26,11 32,11" fill="#185FA5"/>
+                    </svg>
+                    <span>Sortify</span>
+                </a>
+                <p>Master computer science fundamentals through an immersive, real-time visual playground.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="index.html">Visualizer</a></li>
+                    <li><a href="board.html">Board Mode</a></li>
+                    <li><a href="compare.html">Compare</a></li>
+                    <li><a href="learn.html">Algorithm Book</a></li>
+                    <li><a href="about.html">About Sortify</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Sortify. Open to the world.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="common.js"></script>
+    <script src="compare.js"></script>
+</body>
+
+</html>

@@ -37,4 +37,4 @@ The primary objective of this project is to enhance the learning experience of d
 5. Watch the arrays get systematically sorted, or toggle **Manual Mode** to attempt to sort it manually.
 
 ## Live Demo
-https://deepesh-45.github.io/Sorting-Visualizer/
+*(Host your site via GitHub Pages or Vercel and drop the link here!)*

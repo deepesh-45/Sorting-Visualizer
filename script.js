@@ -9,22 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const customInput = document.getElementById("custom-input");
   const loadCustomBtn = document.getElementById("load-custom-btn");
   
+
+  const algoSelect = document.getElementById("algo-select");
+  
   const compCountEl = document.getElementById("comp-count");
   const swapCountEl = document.getElementById("swap-count");
   const sizeCountEl = document.getElementById("size-count");
+  const timerStat = document.getElementById("timer-stat");
+  const timerCount = document.getElementById("timer-count");
   const arrayTextEl = document.getElementById("array-text");
-  
-  const algoContainer = document.getElementById("algo-container");
-  const algoBtns = {
-    bubble: document.getElementById("bubble-btn"),
-    selection: document.getElementById("selection-btn"),
-    insertion: document.getElementById("insertion-btn"),
-    merge: document.getElementById("merge-btn"),
-    quick: document.getElementById("quick-btn"),
-    heap: document.getElementById("heap-btn"),
-    shell: document.getElementById("shell-btn"),
-    cocktail: document.getElementById("cocktail-btn")
-  };
 
   let array = [];
   let isSorting = false;
@@ -38,9 +31,116 @@ document.addEventListener("DOMContentLoaded", () => {
   let customMinVal = null;
   let customMaxVal = null;
 
+  let timerInterval = null;
+  let startTime = 0;
+
+  // Frame Capture Variables
+  let isCapturing = false;
+  let frames = [];
+  let currentFrame = 0;
+  let playTimeout = null;
+  let virtualHeights = [];
+  let virtualClasses = [];
+  let isPlaying = false;
+
+  const prevBtn = document.getElementById("prev-btn");
+  const playPauseBtn = document.getElementById("play-pause-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  function setPlayPauseState(state) {
+    if (!playPauseBtn) return;
+    if (state === 'idle') {
+      playPauseBtn.innerText = '\u25b6 Start Sort';
+      playPauseBtn.classList.add('btn-primary');
+      playPauseBtn.style.fontWeight = 'bold';
+      playPauseBtn.disabled = false;
+    } else if (state === 'sorting') {
+      playPauseBtn.innerText = '\u23f3 Sorting...';
+      playPauseBtn.classList.remove('btn-primary');
+      playPauseBtn.disabled = true;
+    } else if (state === 'playing') {
+      playPauseBtn.innerText = '\u23f8 Pause';
+      playPauseBtn.classList.add('btn-primary');
+      playPauseBtn.disabled = false;
+    } else if (state === 'paused') {
+      playPauseBtn.innerText = '\u25b6 Resume';
+      playPauseBtn.classList.remove('btn-primary');
+      playPauseBtn.disabled = false;
+    }
+  }
+
+  function startTimer() {
+      timerStat.style.display = "flex";
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+          let elapsed = (Date.now() - startTime) / 1000;
+          timerCount.innerText = elapsed.toFixed(1) + "s";
+      }, 100);
+  }
+
+  function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+  }
+
   // Initialization
   function init() {
     generateArray();
+    updateComplexityInfo();
+  }
+
+  function analyzeArrayAndSuggest(arr) {
+      if (!arr || arr.length === 0) return;
+      const n = arr.length;
+      
+      let inversions = 0;
+      let isReverse = true;
+      let sorted = true;
+      for (let i = 0; i < n - 1; i++) {
+          if (arr[i] > arr[i + 1]) sorted = false;
+          if (arr[i] < arr[i + 1]) isReverse = false;
+      }
+      
+      for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+              if (arr[i] > arr[j]) inversions++;
+          }
+      }
+      
+      let maxInversions = (n * (n - 1)) / 2;
+      let suggestion = "";
+      let algoValue = "quick";
+      
+      if (sorted && n > 1) {
+          suggestion = "Already sorted! Insertion Sort parses this in O(n) speed.";
+          algoValue = "insertion";
+      } else if (n <= 15) {
+          suggestion = "Tiny dataset! Insertion Sort is exceptionally fast due to low overhead.";
+          algoValue = "insertion";
+      } else if (inversions <= n * 1.5) {
+          suggestion = "Nearly sorted! Insertion Sort handles this beautifully.";
+          algoValue = "insertion";
+      } else if (isReverse || inversions > maxInversions * 0.8) {
+          suggestion = "Heavily reversed data. Merge Sort securely executes in O(n log n).";
+          algoValue = "merge";
+      } else {
+          suggestion = "Large randomized data. Quick Sort boasts highly optimal average speeds.";
+          algoValue = "quick";
+      }
+      
+      const suggEl = document.getElementById("algo-suggestion");
+      const btn = document.getElementById("apply-sugg-btn");
+      
+      if(suggEl) suggEl.innerText = suggestion;
+      if(btn) {
+          btn.onclick = () => {
+              if (isSorting) return;
+              const sel = document.getElementById("algo-select");
+              sel.value = algoValue;
+              sel.style.boxShadow = "0 0 10px #a78bfa";
+              sel.style.borderColor = "#a78bfa";
+              setTimeout(() => { sel.style.boxShadow = ""; sel.style.borderColor = ""; }, 1000);
+          };
+      }
   }
 
   function updateStats(c = 0, s = 0) {
@@ -72,6 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
     swaps = 0;
     updateStats(0, 0);
     isStopped = false;
+    frames = [];
+    currentFrame = 0;
     customMinVal = null;
     
     for (let i = 0; i < size; i++) {
@@ -80,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       createBar(value, size, i);
     }
     updateArrayText();
+    analyzeArrayAndSuggest(array);
   }
 
   function createBar(value, size, index) {
@@ -105,14 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Helper to pause execution
   function sleep() {
-    return new Promise((resolve, reject) => {
-      if (isStopped) return reject("stopped");
-      const speed = 101 - parseInt(speedSlider.value);
-      setTimeout(() => {
-          if (isStopped) return reject("stopped");
-          resolve();
-      }, speed * 2);
-    });
+    if (isCapturing) {
+        frames.push({
+            heights: [...virtualHeights],
+            classes: [...virtualClasses],
+            comparisons: comparisons,
+            swaps: swaps,
+            arrayVals: [...array]
+        });
+        return Promise.resolve();
+    }
+    return new Promise((resolve) => resolve());
   }
 
   function toggleUI(disabled) {
@@ -123,44 +229,52 @@ document.addEventListener("DOMContentLoaded", () => {
     customInput.disabled = disabled;
     loadCustomBtn.disabled = disabled;
     
-    stopBtn.disabled = !disabled; // Enable stop button only during sorting
-    
-    for (let key in algoBtns) {
-      algoBtns[key].disabled = disabled;
-    }
+    stopBtn.disabled = !disabled;
+    algoSelect.disabled = disabled;
+    if (disabled) setPlayPauseState('sorting');
   }
 
   async function swapNodes(i, j) {
-    if (isStopped) throw "stopped";
-    
-    const bars = document.getElementsByClassName("array-bar");
-    
-    const tempHeight = bars[i].style.height;
-    bars[i].style.height = bars[j].style.height;
-    bars[j].style.height = tempHeight;
+    if (isCapturing) {
+        let tempH = virtualHeights[i];
+        virtualHeights[i] = virtualHeights[j];
+        virtualHeights[j] = tempH;
+    } else {
+        const bars = document.getElementsByClassName("array-bar");
+        const tempHeight = bars[i].style.height;
+        bars[i].style.height = bars[j].style.height;
+        bars[j].style.height = tempHeight;
+    }
 
     const temp = array[i];
     array[i] = array[j];
     array[j] = temp;
     
     updateStats(0, 1);
-    updateArrayText();
+    if (!isCapturing) updateArrayText();
   }
   
   function updateHeight(idx, heightVal) {
-      if (isStopped) throw "stopped";
-      const bars = document.getElementsByClassName("array-bar");
-      bars[idx].style.height = `${heightVal}%`;
+      if (isCapturing) {
+          virtualHeights[idx] = `${heightVal}%`;
+      } else {
+          const bars = document.getElementsByClassName("array-bar");
+          bars[idx].style.height = `${heightVal}%`;
+      }
       array[idx] = heightVal;
-      updateArrayText();
+      if (!isCapturing) updateArrayText();
   }
 
   function setClass(idx, className) {
-    const bars = document.getElementsByClassName("array-bar");
-    if(bars[idx]) {
-        bars[idx].className = `array-bar ${className}`;
-        if(isManualMode) bars[idx].draggable = true;
-    }
+      if (isCapturing) {
+          virtualClasses[idx] = `array-bar ${className}`;
+      } else {
+        const bars = document.getElementsByClassName("array-bar");
+        if(bars[idx]) {
+            bars[idx].className = `array-bar ${className}`;
+            if(isManualMode) bars[idx].draggable = true;
+        }
+      }
   }
 
   // --- Runner ---
@@ -171,36 +285,197 @@ document.addEventListener("DOMContentLoaded", () => {
       swaps = 0;
       updateStats(0, 0);
       toggleUI(true);
+      timerStat.style.display = "none";
+      
+      const bars = document.getElementsByClassName("array-bar");
+      virtualHeights = [];
+      virtualClasses = [];
+      for(let i=0; i<bars.length; i++) {
+          virtualHeights.push(bars[i].style.height);
+          virtualClasses.push("array-bar");
+      }
+      
+      isCapturing = true;
+      frames = [];
+      currentFrame = 0;
+      let originalArray = [...array];
       
       try {
-          // Reset all bar classes first
-          const bars = document.getElementsByClassName("array-bar");
-          for(let i=0; i<bars.length; i++) bars[i].className = "array-bar";
-          
           await sortFn();
-          
-          // Mark all sorted at the end
           for(let i = 0; i < array.length; i++) {
               setClass(i, "sorted");
-              if(i % 5 === 0) await sleep();
+              await sleep();
           }
       } catch (e) {
-          if (e === "stopped") {
-              console.log("Sorting halted by user.");
-              // Remove active classes
-          } else {
-              console.error(e);
-          }
-      } finally {
-          toggleUI(false);
-          updateArrayText();
-          
-          const bars = document.getElementsByClassName("array-bar");
-          for(let i=0; i<bars.length; i++) {
-             let cl = bars[i].className.replace("compare", "").replace("swap", "").trim();
-             bars[i].className = cl;
-          }
+          console.error(e);
       }
+      
+      isCapturing = false;
+      array = originalArray; // restore logical array so renderer uses true values from frames
+      
+      isPlaying = true;
+      setPlayPauseState('playing');
+      if (prevBtn) prevBtn.disabled = false;
+      if (nextBtn) nextBtn.disabled = false;
+      
+      playFrames();
+  }
+
+  function getSpeedMs() {
+      return (101 - parseInt(speedSlider.value)) * 2;
+  }
+
+  function playFrames() {
+      if (!isPlaying || currentFrame >= frames.length || isStopped) {
+          if (currentFrame >= frames.length || isStopped) {
+            finishPlayback();
+          }
+          return;
+      }
+      renderFrame(currentFrame);
+      currentFrame++;
+      playTimeout = setTimeout(playFrames, getSpeedMs());
+  }
+
+  function finishPlayback() {
+      isPlaying = false;
+      clearTimeout(playTimeout);
+      frames = [];
+      currentFrame = 0;
+      toggleUI(false);
+      setPlayPauseState('idle');
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
+      
+      const bars = document.getElementsByClassName("array-bar");
+      for(let i=0; i<bars.length; i++) {
+          let cl = bars[i].className.replace("compare", "").replace("swap", "").trim();
+          bars[i].className = cl;
+      }
+  }
+
+  function renderFrame(index) {
+      if (!frames[index]) return;
+      const f = frames[index];
+      const bars = document.getElementsByClassName("array-bar");
+      for(let i=0; i<bars.length; i++) {
+         bars[i].style.height = f.heights[i];
+         bars[i].className = f.classes[i];
+      }
+      compCountEl.innerText = f.comparisons;
+      swapCountEl.innerText = f.swaps;
+      
+      if (customMinVal !== null) {
+        const originals = f.arrayVals.map(v => Math.round(((v - 5) / 90) * (customMaxVal - customMinVal) + customMinVal));
+        arrayTextEl.innerText = `[ ${originals.join(", ")} ]`;
+      } else {
+        arrayTextEl.innerText = `[ ${f.arrayVals.join(", ")} ]`;
+      }
+  }
+
+  const complexities = {
+      bubble: { algo: "Bubble Sort", best: "O(n)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+      selection: { algo: "Selection Sort", best: "O(n²)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+      insertion: { algo: "Insertion Sort", best: "O(n)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+      merge: { algo: "Merge Sort", best: "O(n log n)", avg: "O(n log n)", worst: "O(n log n)", space: "O(n)" },
+      quick: { algo: "Quick Sort", best: "O(n log n)", avg: "O(n log n)", worst: "O(n²)", space: "O(log n)" },
+      heap: { algo: "Heap Sort", best: "O(n log n)", avg: "O(n log n)", worst: "O(n log n)", space: "O(1)" },
+      shell: { algo: "Shell Sort", best: "O(n log n)", avg: "O(n(log n)²)", worst: "O(n(log n)²)", space: "O(1)" },
+      cocktail: { algo: "Cocktail Sort", best: "O(n)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" }
+  };
+
+  let chartInstance = null;
+
+  function updateComplexityInfo() {
+      const selected = algoSelect.value;
+      drawComplexityChart(selected);
+  }
+
+  function drawComplexityChart(selected) {
+      const canvas = document.getElementById("complexity-chart");
+      if (!canvas) return;
+      
+      const c = complexities[selected];
+      const isOn = c.worst === "O(n)";
+      const isOnLogn = c.worst.includes("log n");
+      const isOn2 = c.worst.includes("n²") || c.worst.includes("(log n)²");
+
+      const labels = Array.from({length: 20}, (_, i) => i + 1);
+      
+      // Calculate datasets
+      const dataOn = labels.map(x => x);
+      const dataOnLogn = labels.map(x => x * Math.log2(x + 1));
+      const dataOn2 = labels.map(x => (x * x) / 4); // scaled slightly for visual balance
+      
+      if (chartInstance) {
+          chartInstance.destroy();
+      }
+      
+      // Check if Chart is defined (in case of CDN failure)
+      if (typeof Chart === 'undefined') return;
+
+      chartInstance = new Chart(canvas, {
+          type: 'line',
+          data: {
+              labels: labels,
+              datasets: [
+                  {
+                      label: 'O(n)',
+                      data: dataOn,
+                      borderColor: isOn ? 'rgba(52, 211, 153, 1)' : 'rgba(52, 211, 153, 0.3)',
+                      borderWidth: isOn ? 3 : 1.5,
+                      borderDash: isOn ? [] : [5, 5],
+                      tension: 0.4,
+                      pointRadius: 0
+                  },
+                  {
+                      label: 'O(n log n)',
+                      data: dataOnLogn,
+                      borderColor: isOnLogn ? 'rgba(167, 139, 250, 1)' : 'rgba(167, 139, 250, 0.3)',
+                      borderWidth: isOnLogn ? 3 : 1.5,
+                      borderDash: isOnLogn ? [] : [5, 5],
+                      tension: 0.4,
+                      pointRadius: 0
+                  },
+                  {
+                      label: 'O(n²)',
+                      data: dataOn2,
+                      borderColor: isOn2 ? 'rgba(248, 113, 113, 1)' : 'rgba(248, 113, 113, 0.3)',
+                      borderWidth: isOn2 ? 3 : 1.5,
+                      borderDash: isOn2 ? [] : [5, 5],
+                      tension: 0.4,
+                      pointRadius: 0
+                  }
+              ]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                  legend: {
+                      labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                  },
+                  title: {
+                      display: true,
+                      text: `Time Complexity Profile: ${c.algo}`,
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      font: { size: 16 }
+                  }
+              },
+              scales: {
+                  x: {
+                      title: { display: true, text: 'Data Size (n)', color: 'rgba(255, 255, 255, 0.7)' },
+                      ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                      grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                  },
+                  y: {
+                      title: { display: true, text: 'Operations (Time)', color: 'rgba(255, 255, 255, 0.7)' },
+                      ticks: { display: false },
+                      grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                  }
+              }
+          }
+      });
   }
 
   // --- Algorithms ---
@@ -499,15 +774,20 @@ document.addEventListener("DOMContentLoaded", () => {
       isManualMode = !isManualMode;
       
       if (isManualMode) {
+          generateArray(); // Start fresh array to sort before enabling manual mode
           manualBtn.innerText = "Manual Mode: ON";
           manualBtn.classList.add("active");
-          algoContainer.style.opacity = "0.5";
-          algoContainer.style.pointerEvents = "none";
+          algoSelect.disabled = true;
+          if (playPauseBtn) playPauseBtn.disabled = true;
+          timerCount.innerText = "0.0s";
+          startTimer();
       } else {
           manualBtn.innerText = "Manual Mode: OFF";
           manualBtn.classList.remove("active");
-          algoContainer.style.opacity = "1";
-          algoContainer.style.pointerEvents = "auto";
+          algoSelect.disabled = false;
+          setPlayPauseState('idle');
+          stopTimer();
+          timerStat.style.display = "none";
       }
       
       const bars = document.getElementsByClassName("array-bar");
@@ -595,7 +875,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if(sorted) {
           const bars = document.getElementsByClassName("array-bar");
           for(let i=0; i<bars.length; i++) bars[i].className = "array-bar sorted";
-          setTimeout(() => alert("Array is Sorted manually! Great job!"), 100);
+          stopTimer();
+          setTimeout(() => alert("Array is Sorted manually! Great job!\nTime taken: " + timerCount.innerText), 100);
+          
+          isManualMode = false;
+          manualBtn.innerText = "Manual Mode: OFF";
+          manualBtn.classList.remove("active");
+          algoSelect.disabled = false;
+          setPlayPauseState('idle');
+          for(let i=0; i<bars.length; i++) bars[i].draggable = false;
       }
   }
 
@@ -605,8 +893,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const val = customInput.value;
       if (!val) return;
       
-      const parsed = val.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-      if (parsed.length === 0) return alert("Please enter valid numbers formatted as comma-separated values.");
+      const parsed = val.split(/[\s,]+/).map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+      if (parsed.length === 0) return alert("Please enter valid numbers formatted as comma or space-separated values.");
       
       // cap values proportionally or just limit max height. Since scale is 2-100%, let's just cap at 100 or find max.
       // Better: Scale them so max is 95% and min is 5%.
@@ -652,26 +940,69 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // Re-map the text explicitly so we show the true user numbers instead of DOM percentages
       updateArrayText();
+      analyzeArrayAndSuggest(array);
   }
 
   // --- Event Listeners ---
   generateBtn.addEventListener("click", generateArray);
   sizeSlider.addEventListener("input", generateArray);
+  algoSelect.addEventListener("change", updateComplexityInfo);
   
   stopBtn.addEventListener("click", () => {
       isStopped = true;
+      isPlaying = false;
+      clearTimeout(playTimeout);
+      finishPlayback();
   });
   
-  manualBtn.addEventListener("click", toggleManualMode);
+  if (playPauseBtn) {
+      playPauseBtn.addEventListener("click", () => {
+          // Idle state — no frames yet, start a new sort
+          if (frames.length === 0 && !isSorting) {
+              const selected = algoSelect.value;
+              if (selected === "bubble") runSort(bubbleSort);
+              else if (selected === "selection") runSort(selectionSort);
+              else if (selected === "insertion") runSort(insertionSort);
+              else if (selected === "merge") runSort(mergeSortWrapper);
+              else if (selected === "quick") runSort(quickSortWrapper);
+              else if (selected === "heap") runSort(heapSort);
+              else if (selected === "shell") runSort(shellSort);
+              else if (selected === "cocktail") runSort(cocktailSort);
+              return;
+          }
+          // Playing/Paused toggle
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+              setPlayPauseState('playing');
+              playFrames();
+          } else {
+              setPlayPauseState('paused');
+              clearTimeout(playTimeout);
+          }
+      });
+  }
+
+  if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+          if (isPlaying) { isPlaying = false; setPlayPauseState('paused'); clearTimeout(playTimeout); }
+          if (currentFrame > 0) {
+              currentFrame--;
+              renderFrame(currentFrame);
+          }
+      });
+  }
+
+  if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+          if (isPlaying) { isPlaying = false; setPlayPauseState('paused'); clearTimeout(playTimeout); }
+          if (currentFrame < frames.length - 1) {
+              currentFrame++;
+              renderFrame(currentFrame);
+          }
+      });
+  }
   
-  algoBtns.bubble.addEventListener("click", () => runSort(bubbleSort));
-  algoBtns.selection.addEventListener("click", () => runSort(selectionSort));
-  algoBtns.insertion.addEventListener("click", () => runSort(insertionSort));
-  algoBtns.merge.addEventListener("click", () => runSort(mergeSortWrapper));
-  algoBtns.quick.addEventListener("click", () => runSort(quickSortWrapper));
-  algoBtns.heap.addEventListener("click", () => runSort(heapSort));
-  algoBtns.shell.addEventListener("click", () => runSort(shellSort));
-  algoBtns.cocktail.addEventListener("click", () => runSort(cocktailSort));
+  manualBtn.addEventListener("click", toggleManualMode);
 
   // Run on start
   init();
