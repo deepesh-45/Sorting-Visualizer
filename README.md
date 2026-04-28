@@ -43,4 +43,4 @@ The primary objective of this project is to enhance the learning experience of d
 7. Watch the arrays get systematically sorted, or toggle **Manual Mode** to attempt to sort it manually.
 
 ## Live Demo
-*(Host your site via GitHub Pages or Vercel and drop the link here!)*
+*https://sortify-silk.vercel.app*
