@@ -1,13 +1,17 @@
-# SortScape
+# Sortify
 
-SortScape is a premium web-based sorting visualizer designed to demonstrate the working of fundamental sorting algorithms through interactive and immersive real-time animations. The project aims to provide a clear and intuitive understanding of how sorting algorithms operate by mapping abstract logical processes directly into visual representations with highly engaging aesthetics.
+Sortify is a premium web-based sorting visualizer designed to demonstrate the working of fundamental sorting algorithms through interactive and immersive real-time animations. The project aims to provide a clear and intuitive understanding of how sorting algorithms operate by mapping abstract logical processes directly into visual representations with highly engaging aesthetics.
 
 ## Features
-- **Real-time Visualization**: Watch algorithms manipulate arrays live with modern, glassmorphism design.
+- **Real-time Visualization**: Watch algorithms manipulate arrays live with a modern, glassmorphism design.
 - **8 Sorting Algorithms**: Support for a wide variety of classic algorithms.
+- **Playback Controls**: Intuitive controls to play, pause, and step through sorting iterations frame-by-frame.
+- **Comparison & Analytics**: Visualize and compare two algorithms side-by-side with detailed statistics and time-vs-algorithm performance graphs.
+- **Time Complexity Graphs**: Dynamic, algorithm-specific time complexity graphs built right into the visualizer interface.
+- **Number Swap Visualizer**: Dedicated visualization tool for understanding atomic number swap operations.
 - **Custom Input Data**: Generate random datasets or input your own comma-separated lists to see how algorithms handle specific scenarios.
 - **Algorithm Book**: An integrated theory section providing the runtime complexities and JavaScript code snippets for all implemented algorithms.
-- **Manual Sort Mode**: Turn off the algorithms and drag-and-drop the bars yourself to practice your intuition! 
+- **Manual Sort Mode**: Turn off the algorithms and drag-and-drop the bars yourself to practice your intuition! Includes a built-in timer to gamify your learning.
 - **Live Operation Stats**: Watch active comparisons and swap counters increment in real-time.
 - **Responsive & Accessible**: Support for both Dark and Light themes.
 
@@ -33,8 +37,10 @@ The primary objective of this project is to enhance the learning experience of d
 1. Open up `index.html` in your browser.
 2. Select **Generate Array** or use the **Custom Dataset** box to provide your own array.
 3. Pick a sorting algorithm from the main dashboard.
-4. Use the sliders to adjust the count of rendering elements or animation speed.
-5. Watch the arrays get systematically sorted, or toggle **Manual Mode** to attempt to sort it manually.
+4. Use the playback controls to play, pause, or step through the visualization.
+5. Use the sliders to adjust the count of rendering elements or animation speed.
+6. Check out the **Comparison** and **Learn** pages for more insights!
+7. Watch the arrays get systematically sorted, or toggle **Manual Mode** to attempt to sort it manually.
 
 ## Live Demo
 *(Host your site via GitHub Pages or Vercel and drop the link here!)*
